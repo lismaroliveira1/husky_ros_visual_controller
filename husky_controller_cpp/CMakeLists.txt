@@ -204,5 +204,8 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-add_executable(velocityController src/husky_velocity_controller.cpp)
-target_link_libraries(velocityController ${catkin_LIBRARIES})
+add_executable(velocity_subscriber src/husky_velocity_controller.cpp)
+target_link_libraries(velocity_subscriber ${catkin_LIBRARIES})
+
+add_executable(velocity_publisher src/husky_velocity_publisher.cpp)
+target_link_libraries(velocity_publisher ${catkin_LIBRARIES})
