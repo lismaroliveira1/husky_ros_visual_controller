@@ -2,16 +2,16 @@
 
 #include "geometry_msgs/Twist.h"
 
-class VelocitySubscriber
+class VelocityController
 {
 private:
     geometry_msgs::Twist msg;
     ros:: Subscriber vel_sub;
 public:
-    VelocitySubscriber(ros::NodeHandle *nh) {
+    VelocityController(ros::NodeHandle *nh) {
         msg.angular.x, msg.angular.y, msg.angular.z = 0,0,0;
         msg.linear.x, msg.linear.y, msg.linear.x = 0,0,0;
-        vel_sub = nh->subscribe("husky_velocity_controller/cmd_vel", 10, &VelocitySubscriber::velocityCallback, this);
+        vel_sub = nh->subscribe("husky_velocity_controller/cmd_vel", 10, &VelocityController::velocityCallback, this);
        
     }
 
@@ -23,7 +23,7 @@ public:
 int main (int argc, char **argv) {  
     ros::init(argc, argv, "filter_velocity");
     ros::NodeHandle nh;
-    VelocitySubscriber velocitySubscribeer = VelocitySubscriber(&nh);
+    VelocityController velocitySubscribeer = VelocityController(&nh);
     ros::spin();
 
     return 0;
