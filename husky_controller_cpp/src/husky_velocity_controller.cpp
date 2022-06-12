@@ -27,8 +27,8 @@ public:
         vel_sub = nh->subscribe("husky_velocity_controller/cmd_vel", 10, &VelocityController::velocityCallback, this);
         pose_subscriber = nh->subscribe("husky_velocity_controller/odom", 10, &VelocityController::poseCallback, this);
         vel_pub = nh->advertise<geometry_msgs::Twist>("/husky_velocity_controller/cmd_vel", 10);
-        goal_pose.pose.pose.orientation.x = 15;
-        goal_pose.pose.pose.orientation.y = 29;
+        goal_pose.pose.pose.position.x = 130;
+        goal_pose.pose.pose.position.y = -492;
 
         goToGoal(goal_pose, 0.5);
         //timer_pub = nh->createTimer(ros::Duration(publish_interval), &VelocityController::timerCallback, this);
@@ -50,25 +50,27 @@ public:
     }
     double getDistance(double desired_pose_x, double desired_pose_y)
     {
-        return sqrt(pow(desired_pose_x - husky_pose_x, 2) - pow(desired_pose_y - husky_pose_y, 2));
+        return sqrt(pow(desired_pose_x - husky_pose_x, 2) + pow(desired_pose_y - husky_pose_y, 2));
     }
 
     void goToGoal(nav_msgs::Odometry goal_pose, double distante_tolerance)
-    {
+    {   
         geometry_msgs::Twist vel_msg;
         ros::Rate loop_rate(10);
         double desired_pose_x = goal_pose.pose.pose.position.x;
         double desired_pose_y = goal_pose.pose.pose.position.y;
-        double Kpl = 1.2; //proportional gain to linear velocity
+        double Kpl = 1.0; //proportional gain to linear velocity
         double kpa = 0.05; //proportional gain to angular velocity
+        double Error = 0;
         do
         {
             double error = getDistance(desired_pose_x, desired_pose_y);
-            vel_msg.linear.x = Kpl*error;
+            Error = Error + error;
+            vel_msg.linear.x = Kpl*Error;
             vel_msg.angular.z = 4*(atan2(desired_pose_y - husky_pose_y, desired_pose_x - husky_pose_x) - husky_orientation_theta);
             vel_pub.publish(vel_msg);
             
-        } while (getDistance(desired_pose_x, desired_pose_y) < distante_tolerance);
+        } while (getDistance(desired_pose_x, desired_pose_y) > distante_tolerance);
     }
 };
 

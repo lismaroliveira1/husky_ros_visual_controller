@@ -1,0 +1,4 @@
+<launch>
+    <node>pkg="husky_controller_cpp" type="husky_velocity_controller" name="husky_controller_node"</node>
+    <node>pkg="husky_controller_cpp" type="husky_velocity_publisher" name="husky_publisher_node"</node>
+</launch>
